@@ -5,63 +5,64 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import ast
+import h5py
 ## imporing custom functions
-from Processing_data import getDir, createCSV
+from ConvertH5 import getDir,  createH5
+from Processing_data import preprocessHeatmaps, preprocessH5_Ytrain
 from Joints import connections
 from plot import plot_heatmaps_and_annotations
 
 
 
+# ## Loading the dataset folder
+# root = 'c:/Users/karti/Downloads/Datasets'
+# dirNames = getDir(root)
 
-## Loading the dataset folder
-root = 'c:/Users/karti/Downloads/Datasets'
-dirNames = getDir(root)
+# print(f"Walking posture data folder names: {dirNames['walking']}")
 
-# print(dirNames['walking'])
+# print(f"Jumping posture data folder names: {dirNames['jumping']}")
 
 ## Calling function to create two CSV for postures a) Walking, b) Jumping
 
-ProcessWalking = createCSV(root, dirNames['walking'], 'walking.csv')
-ProcessJumping = createCSV(root, dirNames['jumping'], 'jumping.csv')
+# ProcessWalking = createH5(root, dirNames['walking'], 'walking.h5')
+# ProcessJumping = createH5(root, dirNames['jumping'], 'jumping.h5')
+
+WalkingPose = "c:/Users/karti/Downloads/Datasets/walking.h5"
+JumpingPose = "c:/Users/karti/Downloads/Datasets/jumping.h5"
+
+## Plotting example pose for walking data
+
+# with h5py.File(WalkingPose, 'r') as data:
+#     i = 100
+#     print("Keys in the root directory:", list(data.keys()))
+#     hori = data['hori'][i]
+#     vert = data['vert'][i]
+#     mask = data['mask'][i]
+#     kp = data['kp'][i]
+#     bbox_i = data['bbox_i'][i]
+#     plot_heatmaps_and_annotations(hori, vert, mask, bbox_i, kp, connections)
 
 
-# fig, ax = plt.subplots()   #
+## Plotting example pose for jumping data
 
-# # ## Ploting to check if walking posture is loaded correctly
-# df = pd.read_csv('walking.csv')
-# print(df.dtypes)
-
-# df =  pd.to_numeric(df.iloc[:, 1:])
-# print(df.dtypes)
-
-# # List of heatmap/array columns
-# array_cols = ['hori', 'vert', 'mask', 'kp', 'bbox_hori', 'bbox_vert', 'bbox_i']
-
-# # Parse each array column from string to NumPy array
-# for col in array_cols:
-#     df[col] = df[col].to_numpy(dtype=np.float16)
-
-# # If you want, convert numeric columns to float
-# numeric_cols = [c for c in df.columns if c not in array_cols + ['timeStep']]
-# df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors='coerce')
-
-# # Now you can access NumPy arrays for heatmaps
-# hori_arrays = np.array(df['hori'].to_list(), dtype=object)  
-
-# # timeStep, hori, vert, bbox_hori, bbox_vert, bbox_i, kp, mask = dfWalking.iloc[3, :]
-# # print(hori.shape)
-
-# # dfWalking.iloc[:, 1:] = dfWalking.iloc[:, 1:].applymap(
-# #     lambda x: np.array(ast.literal_eval(x), dtype=np.float16)
-# # )
+# with h5py.File(JumpingPose, 'r') as data:
+#     i = 100
+#     print("Keys in the root directory:", list(data.keys()))
+#     hori = data['hori'][i]
+#     vert = data['vert'][i]
+#     mask = data['mask'][i]
+#     kp = data['kp'][i]
+#     bbox_i = data['bbox_i'][i]
+#     plot_heatmaps_and_annotations(hori, vert, mask, bbox_i, kp, connections)
 
 
-# print(type(dfWalking.iloc[0,1]))  # <class 'numpy.ndarray'>
-# print(dfWalking.iloc[0,1].shape)  # shape of the heatmap
+# preprocessHeatmaps(WalkingPose, newShape=(65, 65), chunkSize=500, n_threads=12)
 
-# # timeStep, hori, vert, bbox_hori, bbox_vert, bbox_i, kp, mask = df[3, :]
-
-# print(hori.shape)
+# preprocessHeatmaps(WalkingPose, newShape=(65, 65), chunkSize=500, n_threads=12)
 
 
-# # plot_heatmaps_and_annotations(hori, vert, mask, bbox_i, kp, connections)
+# preprocessH5_Ytrain(WalkingPose, (65, 65))
+
+
+with h5py.File(WalkingPose, 'r') as data:
+    print("Keys in the root directory:", list(data.keys()))
